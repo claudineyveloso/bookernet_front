@@ -111,8 +111,6 @@ const Bucket = () => {
         }
 
       } else {
-        console.log('aqui 2');
-        // Object { id: "", description: "", name: "fsdafdsafdsafsad", aws_access_key_id: "fsdafdsafdsafdas", aws_secret_access_key: "fsdafdsafdsafdsa", aws_region: "fsdafdsafdsafsdafdsa" }
         const success = await BucketService.createBucket(_bucket)
         if (success) {
           _bucket.id = createId();
@@ -207,23 +205,23 @@ const Bucket = () => {
     return id;
   };
 
-  const idBodyTemplate = (rowData: Entities.Bucket) => {
-    return (
-      <>
-        <span className="p-column-title">ID</span>
-        {rowData.id}
-      </>
-    );
-  };
+  // const idBodyTemplate = (rowData: Entities.Bucket) => {
+  //   return (
+  //     <>
+  //       <span className="p-column-title">ID</span>
+  //       {rowData.id}
+  //     </>
+  //   );
+  // };
 
-  const descriptionBodyTemplate = (rowData: Entities.Bucket) => {
-    return (
-      <>
-        <span className="p-column-title">Descrição</span>
-        {rowData.description}
-      </>
-    );
-  };
+  // const descriptionBodyTemplate = (rowData: Entities.Bucket) => {
+  //   return (
+  //     <>
+  //       <span className="p-column-title">Descrição</span>
+  //       {rowData.description}
+  //     </>
+  //   );
+  // };
 
   const nameBodyTemplate = (rowData: Entities.Bucket) => {
     return (
@@ -324,10 +322,10 @@ const Bucket = () => {
             responsiveLayout="scroll"
           >
             <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
-            <Column field="description" header="Descrição" sortable body={descriptionBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
+            {/* <Column field="description" header="Descrição" sortable body={descriptionBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column> */}
             <Column field="name" header="Nome" sortable body={nameBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
-            <Column field="aws_access_key_id" header="Chave de acesso Id" sortable body={awsAccessKeyIdBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
-            <Column field="aws_secret_access_key" header="Chave de acesso secreta" sortable body={awsSecretAccessKeyBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
+            <Column field="aws_access_key_id" header="Ch. de acesso Id" sortable body={awsAccessKeyIdBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
+            <Column field="aws_secret_access_key" header="Ch. de acesso secreta" sortable body={awsSecretAccessKeyBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
             <Column field="aws_region" header="Região" sortable body={awsRegionBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
           </DataTable>
