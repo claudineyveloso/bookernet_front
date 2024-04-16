@@ -1,0 +1,84 @@
+{
+  "data": [
+    {
+      "id": "1000",
+      "description": "Product Description",
+      "name": "Bamboo Watch",
+      "aws_access_key_id": "nvklal433",
+      "aws_secret_access_key": "",
+      "aws_region": "São Paulo"
+    },
+    {
+      "id": "1001",
+      "description": "Product Description",
+      "name": "Black Watch",
+      "aws_access_key_id": "nvkla2233",
+      "aws_secret_access_key": "",
+      "aws_region": "Minas Gerais"
+    },
+    {
+      "id": "1002",
+      "description": "Product Description",
+      "name": "Blue Band",
+      "aws_access_key_id": "zz21cz3c1",
+      "aws_secret_access_key": "",
+      "aws_region": "Rio de Janeiro"
+    },
+    {
+      "id": "1003",
+      "description": "Product Description",
+      "name": "Blue Band",
+      "aws_access_key_id": "zz21cz3c1",
+      "aws_secret_access_key": "",
+      "aws_region": "Rio de Janeiro"
+    },
+    {
+      "id": "1004",
+      "description": "Product Description",
+      "name": "Blue Band",
+      "aws_access_key_id": "zz21cz3c1",
+      "aws_secret_access_key": "",
+      "aws_region": "Rio de Janeiro"
+    },
+    {
+      "id": "1005",
+      "description": "Product Description",
+      "name": "Blue Band",
+      "aws_access_key_id": "zz21cz3c1",
+      "aws_secret_access_key": "",
+      "aws_region": "Rio de Janeiro"
+    },
+    {
+      "id": "1006",
+      "description": "Product Description",
+      "name": "Blue Band",
+      "aws_access_key_id": "zz21cz3c1",
+      "aws_secret_access_key": "",
+      "aws_region": "Rio de Janeiro"
+    },
+    {
+      "id": "1007",
+      "description": "Product Description",
+      "name": "Blue Band",
+      "aws_access_key_id": "zz21cz3c1",
+      "aws_secret_access_key": "",
+      "aws_region": "Rio de Janeiro"
+    },
+    {
+      "id": "1008",
+      "description": "Product Description",
+      "name": "Blue Band",
+      "aws_access_key_id": "zz21cz3c1",
+      "aws_secret_access_key": "",
+      "aws_region": "Rio de Janeiro"
+    },
+    {
+      "id": "1009",
+      "description": "Product Description",
+      "name": "Blue Band",
+      "aws_access_key_id": "zz21cz3c1",
+      "aws_secret_access_key": "",
+      "aws_region": "Rio de Janeiro"
+    }
+  ]
+}
