@@ -65,7 +65,7 @@ const Bucket = () => {
       <h5 className="m-0">Gerenciar Buckets</h5>
       <span className="block mt-2 md:mt-0 p-input-icon-left">
         <i className="pi pi-search" />
-        <InputText type="search" onInput={(e) => setGlobalFilter(e.currentTarget.value)} placeholder="Search..." />
+        <InputText type="search" onInput={(e) => setGlobalFilter(e.currentTarget.value)} placeholder="Encontrar um bucket..." />
       </span>
     </div>
   );
