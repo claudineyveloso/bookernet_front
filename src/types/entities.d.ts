@@ -20,13 +20,13 @@ declare namespace Entities {
 
   type Person = {
     id?: string;
-    firt_name: string;
+    firt_name?: string;
     last_name: string;
     email: string;
     phone: string;
     cell_phone: string;
-    personable_id: string;
-    personable_type: string;
+    //personable_id: string;
+    //personable_type: string;
   };
 
   type Address = {
@@ -37,8 +37,8 @@ declare namespace Entities {
     city: string;
     state: string;
     zip_code: string;
-    addressable_id: string;
-    addressable_type: string;
+    //addressable_id: string;
+    //addressable_type: string;
   };
 
   type User = {

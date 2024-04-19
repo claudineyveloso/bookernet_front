@@ -23,7 +23,7 @@ const AppMenu = () => {
       label: 'Cadastro',
       items: [
         { label: 'Buckets', icon: 'pi pi-fw pi-id-card', to: '/bucket' },
-        { label: 'Proprietários', icon: 'pi pi-fw pi-check-square', to: '/uikit/input' },
+        { label: 'Proprietários', icon: 'pi pi-fw pi-check-square', to: '/owner' },
         { label: 'Clientes', icon: 'pi pi-fw pi-bookmark', to: '/uikit/floatlabel' },
         { label: 'Intervalos', icon: 'pi pi-fw pi-clock', to: '/uikit/button', class: 'rotated-icon' },
         { label: 'Tipos de serviço', icon: 'pi pi-fw pi-table', to: '/uikit/table' },
