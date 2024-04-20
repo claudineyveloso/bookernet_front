@@ -190,7 +190,13 @@ const Owner = () => {
       setOwner(updatedOwner);
     }
     setSubmitted(true);
-    if (owner.person.first_name.trim()) {
+    if (owner.people_type.trim() && 
+      owner.bucket_id.trim() && 
+      owner.person.first_name.trim() && 
+      owner.person.last_name.trim() && 
+      owner.person.email.trim() &&
+      owner.person.cell_phone.trim() 
+    ) {
       const _owners = owners ? [...owners] : [];
       const _owner = { ...owner };
       if (owner.id) {
