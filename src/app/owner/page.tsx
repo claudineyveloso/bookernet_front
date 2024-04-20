@@ -16,8 +16,16 @@ import React, { useEffect, useRef, useState } from "react";
 import { BucketService } from "../../data/service/BucketService";
 import { OwnerService } from "../../data/service/OwnerService";
 
-export interface OwnderCellPhone {
-  cell_phone: string;
+export interface OwnerPhone {
+  phone: null | string;
+}
+
+export interface OwnerCellPhone {
+  cell_phone: null | string;
+}
+
+interface Owner {
+  id: string;
 }
 
 const Owner = () => {
@@ -31,8 +39,6 @@ const Owner = () => {
       email: "",
       phone: "",
       cell_phone: "",
-      //      personable_id: '',
-      //      personable_type: '',
     },
     address: {
       public_place: "",
@@ -41,12 +47,10 @@ const Owner = () => {
       city: "",
       state: "",
       zip_code: "",
-      //      addressable_id: '',
-      //      addressable_type: '',
     },
   };
 
-  const [owners, setOwners] = useState(null);
+  const [owners, setOwners] = useState<Entities.Owner[]>([]);
   const [ownerDialog, setOwnerDialog] = useState(false);
   const [deleteOwnersDialog, setDeleteOwnersDialog] = useState(false);
   const [selectedOwners, setSelectedOwners] = useState(null);
@@ -55,28 +59,29 @@ const Owner = () => {
   const [submitted, setSubmitted] = useState(false);
   const [owner, setOwner] = useState<Entities.Owner>(emptyOwner);
   const toast = useRef<Toast>(null);
-  const dt = useRef<DataTable<any>>(null);
+  const dt = useRef<DataTable<Entities.Owner>>(null);
   const [globalFilter, setGlobalFilter] = useState("");
-  const [buckets, setBuckets] = useState<any[]>([]);
-  const [selectedBucketId, setSelectedBucketId] = useState("");
+  const [buckets, setBuckets] = useState<Entities.Bucket[]>([]);
+  const [contactPhone, setContactPhone] = useState<OwnerPhone>({ phone: null });
+  const [contactCellPhone, setContactCellPhone] = useState<OwnerCellPhone>({
+    cell_phone: null,
+  });
   const [selectedPeopleType, setSelectedPeopleType] = useState<{
     name: string;
     code: string;
   } | null>(null);
 
-  const [selectedIsActive, setSelectedIsActive] = useState(null);
   const peopleTypes = [
     { name: "Física", code: "F" },
     { name: "Jurídica", code: "J" },
   ];
 
-  const isActive = [
-    { name: "Ativo", code: "A" },
-    { name: "Inativo", code: "I" },
-  ];
-
   useEffect(() => {
-    OwnerService.getOwners().then((data) => setOwners(data as any));
+    OwnerService.getOwners().then((data) => {
+      if (data !== null) {
+        setOwners(data);
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -91,18 +96,14 @@ const Owner = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (selectedPeopleType) {
-      const updatedOwner = { ...owner };
-      updatedOwner.people_type = selectedPeopleType.code;
-      updatedOwner.bucket_id = selectedBucket;
-      setOwner(updatedOwner);
-    }
-  }, [selectedPeopleType, selectedBucket]);
-
-  const handleBucketChange = (selectedBucketId: string) => {
-    setSelectedBucketId(selectedBucketId);
-  };
+  // useEffect(() => {
+  //   if (selectedPeopleType) {
+  //     const updatedOwner = { ...owner };
+  //     updatedOwner.people_type = selectedPeopleType.code;
+  //     updatedOwner.bucket_id = selectedBucket;
+  //     setOwner(updatedOwner);
+  //   }
+  // }, [selectedPeopleType, selectedBucket]);
 
   const bucketOptions = buckets.map((bucket) => ({
     label: bucket.name,
@@ -125,7 +126,7 @@ const Owner = () => {
             icon="pi pi-trash"
             severity="danger"
             onClick={confirmDeleteSelected}
-            disabled={!selectedOwners || !(selectedOwners as any).length}
+            disabled={!selectedOwners || selectedOwners === 0}
           />
         </div>
       </React.Fragment>
@@ -180,26 +181,17 @@ const Owner = () => {
   };
 
   const saveOwner = async () => {
-    // if (selectedPeopleType && selectedPeopleType?.code && selectedBucket) {
-    if (selectedPeopleType && selectedPeopleType?.code && selectedBucket) {
-      //const varPhone = document.getElementById("phone");
-      //const varCellPhone = document.getElementById("cell_phone");
-      //const inputPhone = varPhone as HTMLInputElement;
-      //const inputCellPhone = varCellPhone as HTMLInputElement;
+    if (selectedPeopleType?.code && selectedBucket) {
       const updatedOwner = { ...owner };
       updatedOwner.people_type = selectedPeopleType.code;
       updatedOwner.bucket_id = selectedBucket;
-      debugger
-      // updatedOwner.person.phone =
-      //   inputPhone.value === "" ? "" : inputCellPhone.value;
-      // updatedOwner.person.cell_phone =
-      //   inputCellPhone.value === "" ? "" : inputCellPhone.value;
+      updatedOwner.person.phone = contactPhone.phone;
+      updatedOwner.person.cell_phone = contactCellPhone.cell_phone;
       setOwner(updatedOwner);
     }
     setSubmitted(true);
-    if (owner.people_type.trim()) {
-      //let _owners = [...(owners as any)];
-      const _owners = owners ? [...(owners as any)] : [];
+    if (owner.person.first_name.trim()) {
+      const _owners = owners ? [...owners] : [];
       const _owner = { ...owner };
       if (owner.id) {
         const success = await OwnerService.updateOwner(_owner);
@@ -221,7 +213,6 @@ const Owner = () => {
           });
         }
       } else {
-        debugger
         const success = await OwnerService.createOwner(_owner);
         if (success) {
           _owner.id = createId();
@@ -242,7 +233,7 @@ const Owner = () => {
         }
       }
 
-      setOwners(_owners as any);
+      setOwners(_owners);
       setOwnerDialog(false);
       setOwner(emptyOwner);
     }
@@ -251,6 +242,14 @@ const Owner = () => {
   const editOwner = (owner: Entities.Owner) => {
     setOwner({ ...owner });
     setOwnerDialog(true);
+    setSelectedPeopleType(
+      owner.people_type === "F"
+        ? { name: "Física", code: "F" }
+        : { name: "Jurídica", code: "J" },
+    );
+    setSelectedBucket(owner.bucket_id);
+    setContactPhone({ phone: owner.person.phone });
+    setContactCellPhone({ cell_phone: owner.person.cell_phone });
   };
 
   const confirmDeleteOwner = (owner: Entities.Owner) => {
@@ -259,10 +258,14 @@ const Owner = () => {
   };
 
   const deleteOwner = async () => {
-    const _selected = (owners as any)?.filter(
-      (val: any) => val.id === owner.id,
+    const _selected = owners?.filter(
+      (val: Owner) => val.id === owner.id
     );
-    const _owners = (owners as any)?.filter((val: any) => val.id !== owner.id);
+
+    const _owners = owners?.filter(
+      (val: Owner) => val.id !== owner.id
+    );
+
     const success = await OwnerService.deleteOwner(_selected[0].id);
     if (success) {
       setOwners(_owners);
@@ -285,9 +288,7 @@ const Owner = () => {
   };
 
   const deleteSelectedOwners = () => {
-    const _owners = (owners as any)?.filter(
-      (val: any) => !(selectedOwners as any)?.includes(val),
-    );
+    const _owners = (owners ?? []).filter((val) => val && val.id === owner.id);
     setOwners(_owners);
     setDeleteOwnersDialog(false);
     setSelectedOwners(null);
@@ -301,8 +302,8 @@ const Owner = () => {
 
   const findIndexById = (id: string) => {
     let index = -1;
-    for (let i = 0; i < (owners as any)?.length; i++) {
-      if ((owners as any)[i].id === id) {
+    for (let i = 0; i < (owners)?.length; i++) {
+      if ((owners)[i].id === id) {
         index = i;
         break;
       }
@@ -333,7 +334,7 @@ const Owner = () => {
     return (
       <>
         <span className="p-column-title">first_name</span>
-        {rowData.person.first_name + " " + rowData.person.last_name}
+        `${rowData.person.first_name} ${rowData.person.last_name}`
       </>
     );
   };
@@ -384,26 +385,18 @@ const Owner = () => {
 
   const openNew = () => {
     setOwner(emptyOwner);
+    setContactPhone((emptyContactPhone) => ({
+      ...emptyContactPhone,
+      phone: null,
+    }));
+    setContactCellPhone((emptyContactCellPhone) => ({
+      ...emptyContactCellPhone,
+      cell_phone: null,
+    }));
+    setSelectedPeopleType(null);
+    setSelectedBucket(null);
     setSubmitted(false);
     setOwnerDialog(true);
-  };
-
-  // const onInputChanges = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: string) => {
-  //   const val = (e.target && e.target.value) || '';
-  //   let _owner = { ...owner };
-  //   _owner[`${name}`] = val;
-
-  //   setOwner(_owner);
-  // };
-
-  const onCellPhoneChange = (newValue: string) => {
-    setOwner((prevOwner: Entities.Owner) => ({
-      ...prevOwner,
-      person: {
-        ...prevOwner.person,
-        cell_phone: newValue,
-      },
-    }));
   };
 
   const onInputChange = (
@@ -411,7 +404,7 @@ const Owner = () => {
     name: string,
     target: string,
   ) => {
-    const val = (e.target && e.target.value) || "";
+    const val = e.target?.value || "";
     setOwner((prevOwner: Entities.Owner) => ({
       ...prevOwner,
       [target]: {
@@ -455,12 +448,12 @@ const Owner = () => {
       <div className="col-12">
         <div className="card">
           <Toast ref={toast} />
-          <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
+          <Toolbar className="mb-4" left={leftToolbarTemplate} />
           <DataTable
             ref={dt}
             value={owners}
             selection={selectedOwners}
-            onSelectionChange={(e) => setSelectedOwners(e.value as any)}
+            onSelectionChange={(e) => setSelectedOwners(e.value)}
             dataKey="id"
             paginator
             rows={10}
@@ -473,10 +466,7 @@ const Owner = () => {
             header={header}
             responsiveLayout="scroll"
           >
-            <Column
-              selectionMode="multiple"
-              headerStyle={{ width: "4rem" }}
-            />
+            <Column selectionMode="multiple" headerStyle={{ width: "4rem" }} />
             {/* <Column field="description" header="Descrição" sortable body={descriptionBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column> */}
             <Column
               field="people_type"
@@ -549,7 +539,7 @@ const Owner = () => {
                       />
                       {submitted && !owner.people_type && (
                         <small className="p-invalid">
-                          O tipo de pessoa é obrigatório.
+                          Tipo de pessoa é obrigatório.
                         </small>
                       )}
                     </div>
@@ -559,8 +549,8 @@ const Owner = () => {
                         id="bucket_id"
                         value={selectedBucket}
                         onChange={(e) => setSelectedBucket(e.value)}
-                        //onChange={(e) => handleBucketChange(e.value)}
                         options={bucketOptions}
+                        required
                         placeholder="Selecione..."
                         className={classNames({
                           "p-invalid": submitted && !owner.bucket_id,
@@ -568,7 +558,7 @@ const Owner = () => {
                       />
                       {submitted && !owner.bucket_id && (
                         <small className="p-invalid">
-                          O bucket é obrigatório.
+                          Bucket é obrigatório.
                         </small>
                       )}
                     </div>
@@ -579,20 +569,36 @@ const Owner = () => {
                       <InputText
                         id="first_name"
                         value={owner.person.first_name}
+                        required
                         onChange={(e) =>
                           onInputChange(e, "first_name", "person")
                         }
+                        className={classNames({
+                          "p-invalid": submitted && !owner.person.first_name,
+                        })}
                       />
+                      {submitted && !owner.person.first_name && (
+                        <small className="p-invalid">Nome é obrigatório.</small>
+                      )}
                     </div>
                     <div className="field col">
                       <label htmlFor="last_name">Sobrenome</label>
                       <InputText
                         id="last_name"
                         value={owner.person.last_name}
+                        required
                         onChange={(e) =>
                           onInputChange(e, "last_name", "person")
                         }
+                        className={classNames({
+                          "p-invalid": submitted && !owner.person.last_name,
+                        })}
                       />
+                      {submitted && !owner.person.last_name && (
+                        <small className="p-invalid">
+                          Sobrenome é obrigatório.
+                        </small>
+                      )}
                     </div>
                   </div>
                   <div className="formgrid grid">
@@ -601,8 +607,17 @@ const Owner = () => {
                       <InputText
                         id="email"
                         value={owner.person.email}
+                        required
                         onChange={(e) => onInputChange(e, "email", "person")}
+                        className={classNames({
+                          "p-invalid": submitted && !owner.person.email,
+                        })}
                       />
+                      {submitted && !owner.person.email && (
+                        <small className="p-invalid">
+                          Email é obrigatório.
+                        </small>
+                      )}
                     </div>
                     <div className="field col">
                       <label htmlFor="phone">Telefone</label>
@@ -610,14 +625,17 @@ const Owner = () => {
                         id="phone"
                         mask="(99) 9999-9999"
                         value={owner.person.phone}
-                        onChange={(e) => onCellPhoneChange(e.value)}
+                        onChange={(e) =>
+                          setContactPhone({
+                            phone:
+                              e.target.value !== undefined &&
+                                e.target.value !== ""
+                                ? e.target.value
+                                : null,
+                          })
+                        }
                         placeholder="(31) 2121-9999"
                       />
-                      {/* <InputText
-                        id="phone"
-                        value={owner.person.phone}
-                        onChange={(e) => onInputChange(e, 'phone', 'person')}
-                      /> */}
                     </div>
                   </div>
                   <div className="formgrid grid">
@@ -627,17 +645,24 @@ const Owner = () => {
                         id="cell_phone"
                         mask="(99) 99999-9999"
                         value={owner.person.cell_phone}
-                        //onChange={(e) => setSelectedCellPhone(e.target.value)}
+                        onChange={(e) =>
+                          setContactCellPhone({
+                            cell_phone:
+                              e.target.value !== undefined &&
+                                e.target.value !== ""
+                                ? e.target.value
+                                : null,
+                          })
+                        }
                         placeholder="(31) 99999-9999"
                       />
-
-                      {/* <InputText
-                        id="cell_phone"
-                        value={owner.person.cell_phone}
-                        onChange={(e) => onInputChange(e, 'cell_phone', 'person')}
-                      /> */}
+                      {submitted && !owner.person.cell_phone && (
+                        <small className="p-invalid">
+                          Número do celular é obrigatório.
+                        </small>
+                      )}
                     </div>
-                    <div className="field col"></div>
+                    <div className="field col" />
                   </div>
                 </div>
               </TabPanel>
@@ -721,7 +746,7 @@ const Owner = () => {
               {owner && (
                 <span>
                   Tem certeza de que deseja excluir{" "}
-                  <b>{owner.person.first_name + "" + owner.person.last_name}</b>
+                  <b>{`${owner.person.first_name} ${owner.person.last_name}`}</b>
                   ?
                 </span>
               )}

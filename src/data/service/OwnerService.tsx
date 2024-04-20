@@ -45,10 +45,13 @@ export const OwnerService = {
 
   async updateOwner(updateOwnerData: Entities.Owner) {
     try {
+      
       const response = await axios.put("http://localhost:8080/update_owner", {
+        id: updateOwnerData.id,
         people_type: updateOwnerData.people_type,
         bucket_id: updateOwnerData.bucket_id,
         person: {
+          personable_id: updateOwnerData.id,
           first_name: updateOwnerData.person.first_name,
           last_name: updateOwnerData.person.last_name,
           email: updateOwnerData.person.email,
@@ -56,6 +59,7 @@ export const OwnerService = {
           cell_phone: updateOwnerData.person.cell_phone,
         },
         address: {
+          addressable_id: updateOwnerData.id,
           public_place: updateOwnerData.address.public_place,
           complement: updateOwnerData.address.complement,
           neighborhood: updateOwnerData.address.neighborhood,
