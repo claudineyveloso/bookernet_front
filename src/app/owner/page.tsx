@@ -96,15 +96,6 @@ const Owner = () => {
     fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   if (selectedPeopleType) {
-  //     const updatedOwner = { ...owner };
-  //     updatedOwner.people_type = selectedPeopleType.code;
-  //     updatedOwner.bucket_id = selectedBucket;
-  //     setOwner(updatedOwner);
-  //   }
-  // }, [selectedPeopleType, selectedBucket]);
-
   const bucketOptions = buckets.map((bucket) => ({
     label: bucket.name,
     value: bucket.id,
@@ -190,12 +181,12 @@ const Owner = () => {
       setOwner(updatedOwner);
     }
     setSubmitted(true);
-    if (owner.people_type.trim() && 
-      owner.bucket_id.trim() && 
-      owner.person.first_name.trim() && 
-      owner.person.last_name.trim() && 
+    if (owner.people_type.trim() &&
+      owner.bucket_id.trim() &&
+      owner.person.first_name.trim() &&
+      owner.person.last_name.trim() &&
       owner.person.email.trim() &&
-      owner.person.cell_phone.trim() 
+      owner.person.cell_phone.trim()
     ) {
       const _owners = owners ? [...owners] : [];
       const _owner = { ...owner };

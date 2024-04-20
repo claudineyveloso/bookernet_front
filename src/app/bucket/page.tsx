@@ -37,18 +37,15 @@ const Bucket = () => {
   const [submitted, setSubmitted] = useState(false);
   const [bucket, setBucket] = useState<Entities.Bucket>(emptyBucket);
   const toast = useRef<Toast>(null);
-  const dt = useRef<DataTable<any>>(null);
+  const dt = useRef<DataTable<Entities.Bucket>>(null);
   const [globalFilter, setGlobalFilter] = useState("");
 
   useEffect(() => {
-    //BucketService.getBuckets().then((data) => setBuckets(data as any));
-    //BucketService.getBuckets().then((data: Entities.Bucket[]) => setBuckets(data));
     BucketService.getBuckets().then((data) => {
       if (data !== null) {
         setBuckets(data);
       }
     });
-
   }, []);
 
   const leftToolbarTemplate = () => {
@@ -125,7 +122,6 @@ const Bucket = () => {
     setSubmitted(true);
 
     if (bucket.name.trim()) {
-      //let _buckets = [...(buckets as any)];
       const _buckets = buckets ? [...(buckets)] : [];
       const _bucket = { ...bucket };
       if (bucket.id) {
@@ -215,14 +211,6 @@ const Bucket = () => {
 
   const deleteSelectedBuckets = () => {
     const _buckets = (buckets ?? []).filter((val) => val && val.id === bucket.id);
-
-    // const _buckets = buckets
-    //   ? buckets.filter((val: Bucket) => !(selectedBuckets as Bucket[])?.includes(val))
-    //   : [];
-    //const _buckets = buckets?.filter((val: Bucket) => !(selectedBuckets as Bucket[])?.includes(val));
-    // const _buckets = (buckets)?.filter(
-    //   (val: any) => !(selectedBuckets as any)?.includes(val),
-    // );
     setBuckets(_buckets);
     setDeleteBucketsDialog(false);
     setSelectedBuckets(null);
@@ -255,24 +243,6 @@ const Bucket = () => {
     }
     return id;
   };
-
-  // const idBodyTemplate = (rowData: Entities.Bucket) => {
-  //   return (
-  //     <>
-  //       <span className="p-column-title">ID</span>
-  //       {rowData.id}
-  //     </>
-  //   );
-  // };
-
-  // const descriptionBodyTemplate = (rowData: Entities.Bucket) => {
-  //   return (
-  //     <>
-  //       <span className="p-column-title">Descrição</span>
-  //       {rowData.description}
-  //     </>
-  //   );
-  // };
 
   const nameBodyTemplate = (rowData: Entities.Bucket) => {
     return (
@@ -397,7 +367,6 @@ const Bucket = () => {
               selectionMode="multiple"
               headerStyle={{ width: "4rem" }}
             />
-            {/* <Column field="description" header="Descrição" sortable body={descriptionBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column> */}
             <Column
               field="name"
               header="Nome"
